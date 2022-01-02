@@ -1,117 +1,98 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="lhh lpR lff">
+    <q-header reveal elevated class="bg-dark text-white">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          Quasar App
+          <q-avatar>
+            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+          </q-avatar>
+          Title
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+      <q-img class="absolute-top" src="/img/bg-pizza.jpg" style="height: 150px">
+        <div class="absolute-bottom bg-transparent">
+          <q-avatar size="56px" class="q-mb-sm">
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+          </q-avatar>
+          <div class="text-weight-bold">Angel Alejandro</div>
+          <div>alejandroi@gmail.com</div>
+        </div>
+      </q-img>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
+      <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
+        <q-list padding>
+          <template v-for="(menuItem, index) in menuList" :key="index">
+            <q-item clickable :active="menuItem.label === 'Usuarios'" v-ripple>
+              <q-item-section avatar>
+                <q-icon :name="menuItem.icon" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.label }}
+              </q-item-section>
+            </q-item>
+            <q-separator :key="'sep' + index" v-if="menuItem.separator" />
+          </template>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer elevated class="bg-grey-9">
+      <q-toolbar>
+        <q-toolbar-title>
+          <div>Title</div>
+        </q-toolbar-title>
+        <div>
+          Designed by Fernando Acosta &copy;. All rights reserved {{new Date().getFullYear()}}
+        </div>
+      </q-toolbar>
+    </q-footer>
   </q-layout>
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-];
-
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'MainLayout',
-
-  components: {
-    EssentialLink
-  },
-
-  setup () {
+  setup() {
     const leftDrawerOpen = ref(false)
 
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+    const toggleLeftDrawer = () => {
+      leftDrawerOpen.value = !leftDrawerOpen.value
     }
-  }
+
+    const menuList = [
+      {
+        icon: 'fas fa-users',
+        label: 'Usuarios',
+        separator: false,
+      },
+      {
+        icon: 'fas fa-utensils',
+        label: 'Comandas',
+        separator: true,
+      },
+      {
+        icon: 'settings',
+        label: 'Settings',
+        separator: false,
+      },
+    ]
+
+    return {
+      leftDrawerOpen,
+      toggleLeftDrawer,
+      menuList,
+    }
+  },
 })
 </script>
