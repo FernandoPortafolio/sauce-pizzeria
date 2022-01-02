@@ -67,13 +67,6 @@ export default defineComponent({
     const route = useRoute()
     const currentPath = ref('')
 
-    console.log(route.matched)
-    console.log(route.path)
-    console.log(route.fullPath)
-    console.log(route.query)
-    console.log(route.name)
-    console.log(route.meta)
-
     watch(
       () => route.path,
       () => {
