@@ -27,11 +27,11 @@
       <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
         <q-list padding>
           <template v-for="(menuItem, index) in menuList" :key="index">
-            <q-item clickable :active="menuItem.label === 'Usuarios'" v-ripple>
+            <q-item clickable :active="menuItem.to === currentPath" v-ripple>
               <q-item-section avatar>
                 <q-icon :name="menuItem.icon" />
               </q-item-section>
-              <q-item-section>
+              <q-item-section @click="this.$router.push(menuItem.to)">
                 {{ menuItem.label }}
               </q-item-section>
             </q-item>
@@ -50,21 +50,37 @@
         <q-toolbar-title>
           <div>Title</div>
         </q-toolbar-title>
-        <div>
-          Designed by Fernando Acosta &copy;. All rights reserved {{new Date().getFullYear()}}
-        </div>
+        <div>Designed by Fernando Acosta &copy;. All rights reserved {{ new Date().getFullYear() }}</div>
       </q-toolbar>
     </q-footer>
   </q-layout>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'MainLayout',
   setup() {
     const leftDrawerOpen = ref(false)
+    const route = useRoute()
+    const currentPath = ref('')
+
+    console.log(route.matched)
+    console.log(route.path)
+    console.log(route.fullPath)
+    console.log(route.query)
+    console.log(route.name)
+    console.log(route.meta)
+
+    watch(
+      () => route.path,
+      () => {
+        currentPath.value = route.path
+      },
+      { immediate: true }
+    )
 
     const toggleLeftDrawer = () => {
       leftDrawerOpen.value = !leftDrawerOpen.value
@@ -73,17 +89,26 @@ export default defineComponent({
     const menuList = [
       {
         icon: 'fas fa-users',
-        label: 'Usuarios',
+        label: 'Clientes',
+        to: '/clientes',
         separator: false,
       },
       {
         icon: 'fas fa-utensils',
-        label: 'Comandas',
+        label: 'Ordenes',
+        to: '/ordenes',
         separator: true,
+      },
+      {
+        icon: 'fas fa-users-cog',
+        label: 'Usuarios',
+        to: '/usuarios',
+        separator: false,
       },
       {
         icon: 'settings',
         label: 'Settings',
+        to: '/settings',
         separator: false,
       },
     ]
@@ -92,6 +117,7 @@ export default defineComponent({
       leftDrawerOpen,
       toggleLeftDrawer,
       menuList,
+      currentPath,
     }
   },
 })
