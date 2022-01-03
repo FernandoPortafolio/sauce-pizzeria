@@ -1,14 +1,14 @@
-import { store } from "quasar/wrappers";
-import { createStore } from "vuex";
+import { store } from 'quasar/wrappers'
+import { createStore } from 'vuex'
 
-// import example from './module-example'
+import auth from './auth.store'
 
 export default store(function () {
   const Store = createStore({
     modules: {
-      // example
+      auth,
     },
-  });
+  })
 
-  return Store;
-});
+  return Store
+})

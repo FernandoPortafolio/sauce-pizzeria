@@ -11,7 +11,7 @@
             :class="{ 'alert-validate': v$.username.$error }"
             data-validate="Username is required"
           >
-            <input class="input100" type="text" name="username" v-model="v$.username.$model" />
+            <input class="input100" type="text" name="username" autocomplete="username" v-model="v$.username.$model" />
             <span class="focus-input100"></span>
           </div>
 
@@ -29,6 +29,7 @@
               :type="showingPass ? 'text' : 'password'"
               name="pass"
               v-model="v$.password.$model"
+              autocomplete="current-password"
             />
             <span class="focus-input100"></span>
           </div>
@@ -43,15 +44,18 @@
 </template>
 
 <script>
-// import '../css/bootstrap.css'
-// import '../css/util.css'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+
+import AuthService from 'services/auth.service'
+
 export default {
   setup() {
     const router = useRouter()
+    const store = useStore()
     const showingPass = ref(false)
     const form = reactive({
       username: '',
@@ -69,7 +73,14 @@ export default {
       const isValid = await v$.value.$validate()
       if (!isValid) return
 
-      router.replace('/')
+      try {
+        const resp = await AuthService.login({ email: form.username, password: form.password })
+        console.log(resp)
+        store.commit('auth/SET_USER', resp.user)
+        router.replace('/')
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     return { showingPass, form, v$, login }
