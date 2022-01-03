@@ -37,6 +37,13 @@
             </q-item>
             <q-separator :key="'sep' + index" v-if="menuItem.separator" />
           </template>
+          <q-separator />
+          <q-item clickable v-ripple @click="logout">
+            <q-item-section avatar>
+              <q-icon name="logout" />
+            </q-item-section>
+            <q-item-section> Salir </q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -58,13 +65,17 @@
 
 <script>
 import { defineComponent, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import AuthService from 'services/auth.service'
 
 export default defineComponent({
   name: 'MainLayout',
   setup() {
     const leftDrawerOpen = ref(false)
     const route = useRoute()
+    const router = useRouter()
+    const store = useStore()
     const currentPath = ref('')
 
     watch(
@@ -106,11 +117,22 @@ export default defineComponent({
       },
     ]
 
+    async function logout() {
+      try {
+        await AuthService.logout()
+        store.commit('auth/LOGOUT')
+        router.replace('/login')
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     return {
       leftDrawerOpen,
       toggleLeftDrawer,
       menuList,
       currentPath,
+      logout,
     }
   },
 })

@@ -2,10 +2,16 @@ export default {
   namespaced: true,
   state: {
     user: null,
+    token: null,
   },
   mutations: {
-    SET_USER(state, user) {
-      state.user = user
+    LOGIN(state, payload) {
+      state.user = payload.user
+      state.token = payload.token
+    },
+    LOGOUT(state) {
+      state.user = null
+      localStorage.removeItem('vuex')
     },
   },
   actions: {
