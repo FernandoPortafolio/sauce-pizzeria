@@ -59,7 +59,6 @@ export default {
       loading.value = true
       users.value = await UserService.fetchUsers()
       deletedUsers.value = await UserService.fetchDeletedUsers()
-      console.log(users.value)
       loading.value = false
     })
 

@@ -27,15 +27,17 @@
       <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
         <q-list padding>
           <template v-for="(menuItem, index) in menuList" :key="index">
-            <q-item clickable :active="menuItem.to === currentPath" v-ripple>
-              <q-item-section avatar>
-                <q-icon :name="menuItem.icon" />
-              </q-item-section>
-              <q-item-section @click="this.$router.push(menuItem.to)">
-                {{ menuItem.label }}
-              </q-item-section>
-            </q-item>
-            <q-separator :key="'sep' + index" v-if="menuItem.separator" />
+            <div v-if="menuItem.show">
+              <q-item clickable :active="menuItem.to === currentPath" v-ripple>
+                <q-item-section avatar>
+                  <q-icon :name="menuItem.icon" />
+                </q-item-section>
+                <q-item-section @click="this.$router.push(menuItem.to)">
+                  {{ menuItem.label }}
+                </q-item-section>
+              </q-item>
+              <q-separator :key="'sep' + index" v-if="menuItem.separator" />
+            </div>
           </template>
           <q-separator />
           <q-item clickable v-ripple @click="logout">
@@ -64,7 +66,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import AuthService from 'services/auth.service'
@@ -77,6 +79,8 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const currentPath = ref('')
+
+    const isAdmin = computed(() => store.getters['auth/isAdmin'])
 
     watch(
       () => route.path,
@@ -96,24 +100,28 @@ export default defineComponent({
         label: 'Clientes',
         to: '/clientes',
         separator: false,
+        show: true,
       },
       {
         icon: 'fas fa-utensils',
         label: 'Ordenes',
         to: '/ordenes',
         separator: true,
+        show: true,
       },
       {
         icon: 'fas fa-users-cog',
         label: 'Usuarios',
         to: '/usuarios',
         separator: false,
+        show: isAdmin.value,
       },
       {
         icon: 'settings',
         label: 'Settings',
         to: '/settings',
         separator: false,
+        show: true,
       },
     ]
 

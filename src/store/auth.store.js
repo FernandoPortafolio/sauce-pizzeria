@@ -31,6 +31,8 @@ export default {
     },
   },
   getters: {
-    //
+    isAdmin: (state) => {
+      return state.user.role_id == 1
+    },
   },
 }
