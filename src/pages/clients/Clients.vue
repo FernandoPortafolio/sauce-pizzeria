@@ -77,13 +77,11 @@ const rows = [
 export default {
   setup() {
     const filter = ref('')
-    const selected = ref([])
 
     return {
       columns,
       rows,
       filter,
-      selected,
     }
   },
 }

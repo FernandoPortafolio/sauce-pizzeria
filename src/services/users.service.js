@@ -1,4 +1,4 @@
-import {api} from '@/config/axios'
+import { api } from 'boot/axios'
 
 class UsersService {
   async registerUser({ name, last_name, email, password, password_confirmation, role_id }) {
