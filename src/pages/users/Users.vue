@@ -33,6 +33,8 @@
 
 <script>
 import { ref, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
+
 import TabActives from './components/TabActives.vue'
 import TabInactives from './components/TabInactives.vue'
 import DialogCreateUser from 'src/pages/users/components/DialogCreateUser.vue'
@@ -46,6 +48,7 @@ export default {
     DialogCreateUser,
   },
   setup() {
+    const $q = useQuasar()
     const tab = ref('activos')
     const users = ref([])
     const deletedUsers = ref([])
@@ -62,20 +65,36 @@ export default {
 
     function onSaveUser(user) {
       users.value.push(user)
+      $q.notify({
+        message: 'Usuario creado',
+        color: 'dark',
+      })
     }
 
     function onUpdateUser(user) {
       users.value = users.value.map((u) => (user.id === u.id ? user : u))
+      $q.notify({
+        message: 'Usuario actualizado',
+        color: 'dark',
+      })
     }
 
     function onDeleteUser(user) {
       users.value = users.value.filter((u) => u.id != user.id)
       deletedUsers.value.push(user)
+      $q.notify({
+        message: 'Usuario eliminado',
+        color: 'dark',
+      })
     }
 
     function onRestoreUser(user) {
       users.value.push(user)
       deletedUsers.value = deletedUsers.value.filter((u) => u.id != user.id)
+      $q.notify({
+        message: 'Usuario restaurado',
+        color: 'dark',
+      })
     }
 
     return {

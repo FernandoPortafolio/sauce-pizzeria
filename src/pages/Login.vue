@@ -45,6 +45,7 @@
 
 <script>
 import { ref, reactive } from 'vue'
+import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { required } from '@vuelidate/validators'
@@ -54,6 +55,7 @@ import AuthService from 'services/auth.service'
 
 export default {
   setup() {
+    const $q = useQuasar()
     const router = useRouter()
     const store = useStore()
     const showingPass = ref(false)
@@ -79,6 +81,11 @@ export default {
         store.commit('auth/LOGIN', resp)
         router.replace('/')
       } catch (error) {
+        $q.notify({
+          message: 'Usuario o contraseña incorrecta',
+          color: 'negative',
+          position: 'top-right',
+        })
         console.log(error)
       }
     }
