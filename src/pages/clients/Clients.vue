@@ -59,17 +59,25 @@ const columns = [
     field: 'phone',
     sortable: true,
   },
+  {
+    name: 'address',
+    label: 'Dirección',
+    field: 'address',
+    sortable: true,
+  },
 ]
 
 const rows = [
   {
     first_name: 'Luis Fernando',
     last_name: 'Acosta Tovar',
+    address: 'Guillermo Prieto #202',
     phone: '4111267600',
   },
   {
     first_name: 'Jose Luis',
     last_name: 'Acosta Tovar',
+    address: 'Guillermo Prieto #202',
     phone: '4111346576',
   },
 ]

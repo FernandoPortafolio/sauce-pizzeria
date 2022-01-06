@@ -121,7 +121,7 @@ export default defineComponent({
         label: 'Settings',
         to: '/settings',
         separator: false,
-        show: true,
+        show: isAdmin.value,
       },
     ]
 

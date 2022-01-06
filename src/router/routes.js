@@ -7,6 +7,7 @@ const routes = [
       { path: '/clientes', component: () => import('pages/clients/Clients.vue') },
       { path: '/ordenes', component: () => import('pages/orders/Orders.vue') },
       { path: '/usuarios', component: () => import('pages/users/Users.vue') },
+      { path: '/settings', component: () => import('pages/settings/Settings.vue') },
     ],
   },
   {
