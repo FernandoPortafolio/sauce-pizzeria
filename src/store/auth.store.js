@@ -32,7 +32,7 @@ export default {
   },
   getters: {
     isAdmin: (state) => {
-      return state.user.role_id == 1
+      return state.user.roles.some((r) => r.id == 1)
     },
   },
 }

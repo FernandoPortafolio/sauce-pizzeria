@@ -1,7 +1,7 @@
 import { api } from 'boot/axios'
 
 class UsersService {
-  async registerUser({ name, last_name, email, password, password_confirmation, role_id }) {
+  async registerUser({ name, last_name, email, password, password_confirmation, roles }) {
     try {
       const resp = await api.post('/users', {
         name,
@@ -9,7 +9,7 @@ class UsersService {
         email,
         password,
         password_confirmation,
-        role_id,
+        roles,
       })
       return resp.data
     } catch (error) {
@@ -17,7 +17,7 @@ class UsersService {
     }
   }
 
-  async updateUser(id, { name, last_name, email, password, password_confirmation, role_id }) {
+  async updateUser(id, { name, last_name, email, password, password_confirmation, roles }) {
     try {
       const resp = await api.put(`/users/${id}`, {
         name,
@@ -25,7 +25,7 @@ class UsersService {
         email,
         password,
         password_confirmation,
-        role_id,
+        roles,
       })
       return resp.data
     } catch (error) {

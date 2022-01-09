@@ -77,7 +77,6 @@ export default {
 
       try {
         const resp = await AuthService.login({ email: form.username, password: form.password })
-        console.log(resp)
         store.commit('auth/LOGIN', resp)
         router.replace('/')
       } catch (error) {

@@ -70,7 +70,10 @@ export default {
         name: 'role',
         label: 'Rol',
         align: 'left',
-        field: (row) => row.role?.name,
+        field: (row) => {
+          const roles = row.roles.map((r) => r.name)
+          return roles.join(', ')
+        },
         sortable: true,
       },
     ]

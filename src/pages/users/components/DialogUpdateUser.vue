@@ -49,14 +49,28 @@
                 :rules="[(val) => val == form.password || 'Las contraseñas no coinciden']"
               />
             </div>
-            <div class="col-12">
+
+            <div class="col-12 q-mt-md">
+              <div class="row items-center">
+                <p class="q-ma-none q-mr-sm">Roles</p>
+                <q-btn round color="dark" icon="add" size="xs" @click="showRoleSelector = true" />
+              </div>
+
+              <ul>
+                <div class="row items-center" v-for="role in form.roles" :key="role">
+                  <li class="q-mr-sm">{{ getRoleName(role) }}</li>
+                  <q-btn @click="deleteRole(role)" icon="delete" text-color="negative" flat round size="sm"></q-btn>
+                </div>
+              </ul>
+
               <q-select
-                v-model="form.role_id"
+                v-model="roleId"
                 :options="roleOptions"
                 label="Rol"
                 emit-value
                 map-options
-                :rules="[(val) => val != 0 || 'Selecciona un rol']"
+                v-show="showRoleSelector"
+                @update:model-value="(v) => addRole(v)"
               />
             </div>
           </div>
@@ -71,7 +85,7 @@
 </template>
 
 <script>
-import { reactive, computed, watch } from 'vue'
+import { reactive, computed, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
@@ -82,12 +96,15 @@ export default {
   emits: ['onClose', 'onUpdate'],
   setup(props, { emit }) {
     const store = useStore()
+    const roles = computed(() => store.state.auth.roles)
     const roleOptions = computed(() =>
       store.state.auth.roles.map((r) => ({
         label: r.name,
         value: r.id,
       }))
     )
+    const roleId = ref(null)
+    const showRoleSelector = ref(false)
 
     const form = reactive({
       name: '',
@@ -96,6 +113,7 @@ export default {
       password: '',
       password_confirmation: '',
       role_id: '',
+      roles: [],
     })
 
     watch(
@@ -106,6 +124,9 @@ export default {
           form.last_name = props.user.last_name
           form.email = props.user.email
           form.role_id = props.user.role_id
+          props.user.roles.forEach(r => {
+            addRole(r.id)
+          });
         }
       }
     )
@@ -125,6 +146,20 @@ export default {
       }
     }
 
+    function addRole(role_id) {
+      if (!form.roles.includes(role_id)) form.roles.push(role_id)
+      showRoleSelector.value = false
+      roleId.value = null
+    }
+
+    function deleteRole(role_id) {
+      form.roles = form.roles.filter((r) => r != role_id)
+    }
+
+    function getRoleName(role_id) {
+      return roles.value.find((r) => r.id == role_id).name
+    }
+
     function resetForm() {
       form.name = ''
       form.last_name = ''
@@ -132,9 +167,11 @@ export default {
       form.password = ''
       form.password_confirmation = ''
       form.role_id = ''
+      form.roles = []
+      roleId.value = null
     }
 
-    return { close, roleOptions, form, updateUser }
+    return { close, roleOptions, showRoleSelector, addRole, deleteRole, roleId, getRoleName, form, updateUser }
   },
 }
 </script>
