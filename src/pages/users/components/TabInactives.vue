@@ -1,48 +1,24 @@
 <template>
-  <q-table
-    title="Usuarios Eliminados"
-    :rows="users"
-    :columns="columns"
-    :filter="filter"
-    row-key="id"
-    :loading="loading"
-  >
-    <template #top-right>
-      <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar">
-        <template #append>
-          <q-icon name="search" />
-        </template>
-      </q-input>
+  <Table :columns="columns" :rows="users" rowKey="id" :filter="filter" :loading="loading" title="Usuarios Eliminados">
+    <template #actions="props">
+      <q-td style="width: 120px">
+        <div class="text-center">
+          <q-btn flat dense round icon="restore" class="q-mr-sm" @click="restoreUser(props.row)" />
+        </div>
+      </q-td>
     </template>
-
-    <template #header="props">
-      <q-tr :props="props">
-        <q-th v-for="col in props.cols" :key="col.name" :props="props">
-          {{ col.label }}
-        </q-th>
-        <q-th><!-- Actions --></q-th>
-      </q-tr>
-    </template>
-
-    <template #body="props">
-      <q-tr :props="props">
-        <q-td :props="props" v-for="col in props.cols" :key="col.name">{{ col.value }}</q-td>
-        <q-td style="width: 120px">
-          <div class="text-center">
-            <q-btn flat dense round icon="restore" @click="restoreUser(props.row)" />
-          </div>
-        </q-td>
-      </q-tr>
-    </template>
-  </q-table>
+  </Table>
 </template>
 
 <script>
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
+import Table from 'src/components/Table.vue'
+
 import UserService from 'src/services/users.service'
 
 export default {
+  components: { Table },
   props: {
     users: { required: true },
     loading: { default: false },

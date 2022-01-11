@@ -19,8 +19,8 @@
           <q-avatar size="56px" class="q-mb-sm">
             <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
-          <div class="text-weight-bold">Angel Alejandro</div>
-          <div>alejandroi@gmail.com</div>
+          <div class="text-weight-bold">{{ user.name }} {{ user.last_name }}</div>
+          <div>{{ user.email }}</div>
         </div>
       </q-img>
 
@@ -81,6 +81,7 @@ export default defineComponent({
     const currentPath = ref('')
 
     const isAdmin = computed(() => store.getters['auth/isAdmin'])
+    const user = computed(() => store.state.auth.user)
 
     watch(
       () => route.path,
@@ -118,7 +119,7 @@ export default defineComponent({
       },
       {
         icon: 'settings',
-        label: 'Settings',
+        label: 'Configuración',
         to: '/settings',
         separator: false,
         show: isAdmin.value,
@@ -141,6 +142,7 @@ export default defineComponent({
       menuList,
       currentPath,
       logout,
+      user,
     }
   },
 })

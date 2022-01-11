@@ -1,38 +1,35 @@
 import { api } from 'boot/axios'
-
-class AuthService {
-  async login(user) {
+class OrderTypesService {
+  async fetchAll() {
     try {
-      const resp = await api.post('/login', user)
-      api.defaults.headers.common['Authorization'] = `Bearer ${resp.data.token}`
+      const resp = await api.get('/order_types')
       return resp.data
     } catch (error) {
       throw error.response?.data || error
     }
   }
 
-  async logout() {
+  async fetchOne(id) {
     try {
-      const resp = await api.get('/logout')
-      api.defaults.headers.common['Authorization'] = null
+      const resp = await api.get(`/order_types/${id}`)
       return resp.data
     } catch (error) {
       throw error.response?.data || error
     }
   }
 
-  async getCurrentUser() {
+  async update(id, { name, price }) {
     try {
-      const resp = await api.get('/user')
+      const resp = await api.put(`/order_types/${id}`, { name, price })
       return resp.data
     } catch (error) {
       throw error.response?.data || error
     }
   }
 
-  async fetchRoles() {
+  async delete(id) {
     try {
-      const resp = await api.get('/roles')
+      const resp = await api.delete(`/order_types/${id}`)
       return resp.data
     } catch (error) {
       throw error.response?.data || error
@@ -40,4 +37,4 @@ class AuthService {
   }
 }
 
-export default new AuthService()
+export default new OrderTypesService()

@@ -13,7 +13,7 @@ class UsersService {
       })
       return resp.data
     } catch (error) {
-      throw error.response.data || error
+      throw error.response?.data || error
     }
   }
 
@@ -29,7 +29,7 @@ class UsersService {
       })
       return resp.data
     } catch (error) {
-      throw error.response.data || error
+      throw error.response?.data || error
     }
   }
 
@@ -38,7 +38,7 @@ class UsersService {
       const resp = await api.delete(`/users/${id}`)
       return resp.data
     } catch (error) {
-      throw error.response.data || error
+      throw error.response?.data || error
     }
   }
 
@@ -47,7 +47,7 @@ class UsersService {
       const resp = await api.get('/users')
       return resp.data
     } catch (error) {
-      throw error.response.data || error
+      throw error.response?.data || error
     }
   }
 
@@ -56,7 +56,7 @@ class UsersService {
       const resp = await api.get('/users/deleted')
       return resp.data
     } catch (error) {
-      throw error.response.data || error
+      throw error.response?.data || error
     }
   }
 
@@ -65,7 +65,7 @@ class UsersService {
       const resp = await api.get(`/users/restore/${id}`)
       return resp.data
     } catch (error) {
-      throw error.response.data || error
+      throw error.response?.data || error
     }
   }
 }
