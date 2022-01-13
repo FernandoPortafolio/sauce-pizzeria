@@ -3,12 +3,14 @@ import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
 import auth from './auth.store'
+import clients from './clients.store'
 import { api } from 'boot/axios'
 
 export default store(function () {
   const Store = createStore({
     modules: {
       auth,
+      clients,
     },
     plugins: [
       createPersistedState({

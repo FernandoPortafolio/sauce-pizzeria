@@ -4,92 +4,120 @@
       <q-card-section>
         <q-toolbar>
           <q-toolbar-title> Administración de Clientes </q-toolbar-title>
-          <q-btn class="q-mr-sm" flat dense round icon="add" />
+          <q-btn class="q-mr-sm" flat dense round icon="add" @click="showCreateDialog = true" />
         </q-toolbar>
       </q-card-section>
     </q-card>
 
-    <q-table title="Clientes" :rows="rows" :columns="columns" :filter="filter" row-key="phone">
-      <template #top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar">
-          <template #append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+    <Table :columns="columns" :rows="clients" rowKey="id" :filter="filter" :loading="loading" title="Clientes">
+      <template #actions="props">
+        <q-td style="width: 120px">
+          <div class="text-center">
+            <q-btn flat dense round icon="edit" class="q-mr-sm" @click="showEditDialog(props.row)" />
+            <q-btn flat dense round icon="delete_outline" @click="deteleClient(props.row)" />
+          </div>
+        </q-td>
       </template>
+    </Table>
 
-      <template #header="props">
-        <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
-          </q-th>
-          <q-th><!-- Actions --></q-th>
-        </q-tr>
-      </template>
-
-      <template #body="props">
-        <q-tr :props="props">
-          <q-td :props="props" v-for="col in props.cols" :key="col.name">{{ col.value }}</q-td>
-          <q-td style="width: 120px">
-            <div class="text-center">
-              <q-btn flat dense round icon="edit" class="q-mr-sm" />
-              <q-btn flat dense round icon="delete_outline" />
-            </div>
-          </q-td>
-        </q-tr>
-      </template>
-    </q-table>
+    <DialogCreateClient :show="showCreateDialog" @onClose="showCreateDialog = false"></DialogCreateClient>
+    <DialogUpdateClient
+      :show="showUpdateDialog"
+      @onClose="showUpdateDialog = false"
+      :client="selectedClient"
+    ></DialogUpdateClient>
   </q-page>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useQuasar } from 'quasar'
 
-const columns = [
-  {
-    name: 'name',
-    label: 'Nombre',
-    align: 'left',
-    field: (row) => `${row.first_name} ${row.last_name}`,
-    sortable: true,
-  },
-  {
-    name: 'phone',
-    label: 'Teléfono',
-    field: 'phone',
-    sortable: true,
-  },
-  {
-    name: 'address',
-    label: 'Dirección',
-    field: 'address',
-    sortable: true,
-  },
-]
-
-const rows = [
-  {
-    first_name: 'Luis Fernando',
-    last_name: 'Acosta Tovar',
-    address: 'Guillermo Prieto #202',
-    phone: '4111267600',
-  },
-  {
-    first_name: 'Jose Luis',
-    last_name: 'Acosta Tovar',
-    address: 'Guillermo Prieto #202',
-    phone: '4111346576',
-  },
-]
+import Table from 'src/components/Table.vue'
+import DialogCreateClient from './components/DialogCreateClient.vue'
+import DialogUpdateClient from './components/DialogUpdateClient.vue'
+import ClientService from 'src/services/clients.service'
 
 export default {
+  components: { Table, DialogCreateClient, DialogUpdateClient },
   setup() {
+    const store = useStore()
+    const $q = useQuasar()
     const filter = ref('')
+    const loading = ref(false)
+    const clients = computed(() => store.state.clients.clients)
+    const showCreateDialog = ref(false)
+    const showUpdateDialog = ref(false)
+    const selectedClient = ref(null)
+
+    const columns = [
+      {
+        name: 'name',
+        label: 'Nombre',
+        align: 'left',
+        field: (row) => `${row.first_name} ${row.last_name}`,
+        sortable: true,
+      },
+      {
+        name: 'phone',
+        label: 'Teléfono',
+        field: 'phone',
+        sortable: true,
+      },
+      {
+        name: 'address',
+        label: 'Dirección',
+        field: (row) => `${row.address.street} #${row.address.number}. ${row.address.colony}`,
+        sortable: true,
+      },
+    ]
+
+    onMounted(() => {
+      fetchClients()
+    })
+
+    async function fetchClients() {
+      loading.value = true
+      await store.dispatch('clients/fetchClients')
+      loading.value = false
+    }
+
+    function deteleClient(client) {
+      $q.dialog({
+        title: 'Confirmación',
+        message: `¿Estas seguro de eliminar a ${client.first_name}?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        try {
+          await ClientService.delete(client.id)
+          store.commit('clients/DELETE_CLIENT', client)
+          $q.notify({
+            message: 'Cliente eliminado',
+            color: 'dark',
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      })
+    }
+
+    function showEditDialog(client) {
+      showUpdateDialog.value = true
+      selectedClient.value = client
+    }
 
     return {
       columns,
-      rows,
+      clients,
       filter,
+      loading,
+      deteleClient,
+      showCreateDialog,
+      showUpdateDialog,
+      selectedClient,
+      showEditDialog,
     }
   },
 }

@@ -1,5 +1,13 @@
 <template>
-  <q-table :title="title" :rows="rows" :columns="columns" :filter="filter" :row-key="rowKey" :loading="loading">
+  <q-table
+    :title="title"
+    rows-per-page-label="Registros por página"
+    :rows="rows"
+    :columns="columns"
+    :filter="filter"
+    :row-key="rowKey"
+    :loading="loading"
+  >
     <template #top-right>
       <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar">
         <template #append>
