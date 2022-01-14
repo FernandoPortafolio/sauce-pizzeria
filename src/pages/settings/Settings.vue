@@ -11,6 +11,7 @@
         <q-tab name="mass_type" label="Tipos de Masa" />
         <q-tab name="ingredients" label="Ingredientes" />
         <q-tab name="specialties" label="Especialidadades" />
+        <q-tab name="complements" label="Complementos" />
         <q-tab name="sizes" label="Tamaños" />
         <q-tab name="drinks" label="Bebidas" />
         <q-tab name="order_type" label="Tipos de pedido" />
@@ -26,6 +27,9 @@
       </q-tab-panel>
       <q-tab-panel name="specialties">
         <TabEspecialties></TabEspecialties>
+      </q-tab-panel>
+      <q-tab-panel name="complements">
+        <TabComplements></TabComplements>
       </q-tab-panel>
       <q-tab-panel name="sizes">
         <TabSizes></TabSizes>
@@ -45,6 +49,7 @@ import TabDrinks from './components/TabDrinks.vue'
 import TabOrdersType from './components/TabOrdersType.vue'
 import TabSizes from './components/TabSizes.vue'
 import TabEspecialties from './components/TabEspecialties.vue'
+import TabComplements from './components/TabComplements.vue'
 import TabIngredients from './components/TabIngredients.vue'
 import TabMassType from './components/TabMassType.vue'
 import { ref } from 'vue'
@@ -53,6 +58,7 @@ export default {
     TabMassType,
     TabIngredients,
     TabEspecialties,
+    TabComplements,
     TabSizes,
     TabDrinks,
     TabOrdersType,
