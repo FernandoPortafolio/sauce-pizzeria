@@ -35,3 +35,7 @@ fieldset {
   border: 1px solid #b1b1b1;
   padding: 10px 20px 30px 20px;
 }
+
+img {
+  max-width: 100%;
+}

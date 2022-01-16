@@ -27,6 +27,15 @@ export default {
         console.log(error)
       }
     },
+
+    async updateClient({ state, commit }, client) {
+      try {
+        const updated = await ClientService.update(client.id, client)
+        commit('UPDATE_CLIENT', updated)
+      } catch (error) {
+        console.log(error)
+      }
+    },
   },
   getters: {
     //
