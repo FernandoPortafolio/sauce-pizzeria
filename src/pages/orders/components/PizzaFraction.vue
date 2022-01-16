@@ -1,6 +1,6 @@
 <template>
-  <div class="row q-mb-md q-gutter-x-lg">
-    <div class="col-2">
+  <div class="row q-mb-md q-col-gutter-x-lg justify-center">
+    <div class="col-3 col-md-2">
       <img
         :src="pizzaType == 1 ? '/img/completa-selected.png' : '/img/completa-unselected.png'"
         class="cursor-pointer"
@@ -8,7 +8,7 @@
       />
       <q-tooltip class="bg-primary text-white">Piza Completa</q-tooltip>
     </div>
-    <div class="col-2">
+    <div class="col-3 col-md-2">
       <img
         :src="pizzaType == 2 ? '/img/media-selected.png' : '/img/media-unselected.png'"
         class="cursor-pointer"
@@ -16,11 +16,27 @@
       />
       <q-tooltip class="bg-primary text-white">Piza Mitad y Mitad</q-tooltip>
     </div>
+
+    <div class="col-12 col-md-8">
+      <p class="text-center text-bold">Tipo de Masa</p>
+      <div class="row">
+        <q-btn
+          v-for="mass in massTypes"
+          :key="mass.id"
+          flat
+          size="sm"
+          @click="massSelected = mass"
+          :class="mass.id == massSelected?.id ? 'bg-teal text-white' : ''"
+        >
+          {{ mass.name }}
+        </q-btn>
+      </div>
+    </div>
   </div>
 
   <div class="row items-center q-mb-md">
-    <label class="col q-mr-md">Tamaño:</label>
-    <div class="col" v-for="size in sizes" :key="size.id">
+    <label class="col-12 col-md text-center">Tamaño:</label>
+    <div class="col-md" v-for="size in sizes" :key="size.id">
       <q-btn
         flat
         size="sm"
@@ -77,11 +93,12 @@
 
 <script>
 import { watch, ref, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 
 import SizesService from 'src/services/sizes.service'
 import SpecialtiesService from 'src/services/specialties.service'
 import IngredientsService from 'src/services/ingredients.service'
-import { useQuasar } from 'quasar'
+import MassService from 'src/services/mass.service'
 
 export default {
   emits: ['onAddPizza'],
@@ -91,8 +108,10 @@ export default {
     const sizes = ref([])
     const especialities = ref([])
     const ingredients = ref([])
+    const massTypes = ref([])
     const pizzaType = ref(0)
     const sizeSelected = ref(null)
+    const massSelected = ref(null)
     const specialty1 = ref(null)
     const specialty2 = ref(null)
     const ingredients1 = ref([])
@@ -103,6 +122,7 @@ export default {
       fetchSizes()
       fetchSpecialties()
       fetchIngredients()
+      fetchMassTypes()
     })
 
     async function fetchSizes() {
@@ -114,6 +134,10 @@ export default {
     }
     async function fetchIngredients() {
       ingredients.value = await IngredientsService.fetchAll()
+    }
+    async function fetchMassTypes() {
+      const resp = await MassService.fetchAll()
+      massTypes.value = resp.map((s) => ({ ...s, label: s.name, value: s.id }))
     }
     function changeType(type) {
       pizzaType.value = type
@@ -138,6 +162,7 @@ export default {
     function addPizza() {
       let message = null
       if (pizzaType.value == 0) message = 'Selecciona Pizza Completa o Mitad y Mitad'
+      else if (massSelected.value == null) message = 'Selecciona un tipo de masa'
       else if (sizeSelected.value == null) message = 'Selecciona un tamaño para la pizza'
       else if (pizzaType.value == 1) {
         if (specialty1.value == null) message = 'Selecciona una especialidad'
@@ -188,6 +213,8 @@ export default {
       ingredients2,
       addPizza,
       pizzas,
+      massSelected,
+      massTypes,
     }
   },
 }
