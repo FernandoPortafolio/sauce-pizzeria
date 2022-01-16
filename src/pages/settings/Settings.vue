@@ -18,7 +18,7 @@
       </q-tabs>
     </q-card>
 
-    <q-tab-panels v-model="tab" animated>
+    <q-tab-panels v-model="tab" animated keep-alive>
       <q-tab-panel name="mass_type">
         <TabMassType></TabMassType>
       </q-tab-panel>

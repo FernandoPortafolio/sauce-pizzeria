@@ -11,48 +11,55 @@
 
       <div class="row">
         <div class="col-12 col-md-6">
+          <q-tabs v-model="tab" class="text-teal">
+            <q-tab name="client" label="Cliente" />
+            <q-tab name="pizzas" label="Pizzas" />
+            <q-tab name="drinks" label="Bebidas" />
+            <q-tab name="complements" label="Complementos" />
+            <q-tab name="observations" label="Observaciones" />
+          </q-tabs>
+
           <q-card-section>
-            <!-- CLIENTE -->
-            <fieldset>
-              <legend>Cliente</legend>
+            <q-tab-panels v-model="tab" animated keep-alive>
+              <q-tab-panel name="client">
+                <fieldset>
+                  <legend>Cliente</legend>
+                  <ClientFraction @onChangeClient="selectClient"></ClientFraction>
+                </fieldset>
+              </q-tab-panel>
+              <q-tab-panel name="pizzas">
+                <fieldset class="q-mt-md">
+                  <legend>Pizzas</legend>
 
-              <ClientFraction @onChangeClient="selectClient"></ClientFraction>
-            </fieldset>
-            <!-- FIN CLIENTE -->
-
-            <!-- PIZZAS -->
-            <fieldset class="q-mt-md">
-              <legend>Pizzas</legend>
-
-              <PizzaFraction @onAddPizza="addPizza"></PizzaFraction>
-            </fieldset>
-            <!-- FIN PIZZAS -->
-
-            <!-- BEBIDAS -->
-            <fieldset class="q-mt-md">
-              <legend>Bebidas</legend>
-              <DrinksFraction @onAddDrink="addDrink"></DrinksFraction>
-            </fieldset>
-            <!-- FIN BEBIDAS -->
-
-            <!-- COMPLEMENTOS -->
-            <fieldset class="q-mt-md">
-              <legend>Complementos</legend>
-              <ComplementsFraction @onAddComplement="addComplement"></ComplementsFraction>
-            </fieldset>
-            <!-- FIN COMPLEMENTOS -->
-
-            <ObservationsFraction
-              @onChangeOrderType="changeOrderType"
-              @onChangeObservations="(o) => (observations = o)"
-            ></ObservationsFraction>
+                  <PizzaFraction @onAddPizza="addPizza"></PizzaFraction>
+                </fieldset>
+              </q-tab-panel>
+              <q-tab-panel name="drinks">
+                <fieldset class="q-mt-md">
+                  <legend>Bebidas</legend>
+                  <DrinksFraction @onAddDrink="addDrink"></DrinksFraction>
+                </fieldset>
+              </q-tab-panel>
+              <q-tab-panel name="complements">
+                <fieldset class="q-mt-md">
+                  <legend>Complementos</legend>
+                  <ComplementsFraction @onAddComplement="addComplement"></ComplementsFraction>
+                </fieldset>
+              </q-tab-panel>
+              <q-tab-panel name="observations">
+                <ObservationsFraction
+                  @onChangeOrderType="changeOrderType"
+                  @onChangeObservations="(o) => (observations = o)"
+                ></ObservationsFraction>
+              </q-tab-panel>
+            </q-tab-panels>
           </q-card-section>
         </div>
 
         <div class="col-12 col-md-6">
           <q-card-section>
             <p class="text-bold q-mt-sm">Resumen Del Pedido</p>
-            <q-markup-table separator="none" flat>
+            <q-markup-table separator="none" flat dense>
               <thead>
                 <tr>
                   <th class="text-left">Cantidad</th>
@@ -112,6 +119,10 @@
                 </tr>
               </tbody>
             </q-markup-table>
+
+            <p><span class="text-bold">Tipo de Orden: </span>{{ orderType?.name }}</p>
+            <p><span class="text-bold">Observaciones: </span>{{ observations }}</p>
+
             <!-- FIN RESUMEN -->
           </q-card-section>
         </div>
@@ -139,6 +150,7 @@ export default {
   setup(props, { emit }) {
     const $q = useQuasar()
     const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+    const tab = ref('client')
 
     onMounted(() => {
       fetchPaymentTypes()
@@ -209,6 +221,7 @@ export default {
     }
 
     return {
+      tab,
       close,
       selectedClient,
       selectClient,
