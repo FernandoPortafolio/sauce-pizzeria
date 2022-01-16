@@ -26,7 +26,7 @@
         <TabIngredients></TabIngredients>
       </q-tab-panel>
       <q-tab-panel name="specialties">
-        <TabEspecialties></TabEspecialties>
+        <TabSpecialties></TabSpecialties>
       </q-tab-panel>
       <q-tab-panel name="complements">
         <TabComplements></TabComplements>
@@ -48,7 +48,7 @@
 import TabDrinks from './components/TabDrinks.vue'
 import TabOrdersType from './components/TabOrdersType.vue'
 import TabSizes from './components/TabSizes.vue'
-import TabEspecialties from './components/TabEspecialties.vue'
+import TabSpecialties from './components/TabSpecialties.vue'
 import TabComplements from './components/TabComplements.vue'
 import TabIngredients from './components/TabIngredients.vue'
 import TabMassType from './components/TabMassType.vue'
@@ -57,7 +57,7 @@ export default {
   components: {
     TabMassType,
     TabIngredients,
-    TabEspecialties,
+    TabSpecialties,
     TabComplements,
     TabSizes,
     TabDrinks,

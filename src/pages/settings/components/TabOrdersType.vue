@@ -24,7 +24,7 @@ export default {
     const orderTypes = ref([])
     const filter = ref('')
     const loading = ref(false)
-    const numberFormat = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'MXN' })
+    const numberFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
 
     const columns = [
       {
@@ -38,7 +38,7 @@ export default {
         name: 'price',
         label: 'Precio',
         align: 'left',
-        field: (row) => `$${numberFormat.format(row.price)}`,
+        field: (row) => `${numberFormat.format(row.price)}`,
         sortable: true,
       },
     ]
