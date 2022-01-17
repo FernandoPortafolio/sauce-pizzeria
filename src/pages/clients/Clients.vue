@@ -35,7 +35,7 @@ import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
 
 import Table from 'src/components/Table.vue'
-import DialogCreateClient from './components/DialogCreateClient.vue'
+import DialogCreateClient from 'src/components/DialogCreateClient.vue'
 import DialogUpdateClient from './components/DialogUpdateClient.vue'
 import ClientService from 'src/services/clients.service'
 

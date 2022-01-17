@@ -68,7 +68,7 @@ export default {
   props: {
     show: { default: false },
   },
-  emits: ['onClose'],
+  emits: ['onClose', 'onSave'],
   setup(props, { emit }) {
     const $q = useQuasar()
     const store = useStore()
@@ -92,6 +92,7 @@ export default {
         const client = { ...form }
         const newClient = await ClientService.create(client)
         store.commit('clients/ADD_CLIENT', newClient)
+        emit('onSave', newClient)
         $q.notify({
           message: 'Cliente creado',
           color: 'dark',

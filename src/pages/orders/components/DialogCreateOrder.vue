@@ -144,7 +144,13 @@ import ObservationsFraction from './ObservationsFraction'
 import OrderService from 'src/services/order.service'
 
 export default {
-  components: { ClientFraction, PizzaFraction, DrinksFraction, ComplementsFraction, ObservationsFraction },
+  components: {
+    ClientFraction,
+    PizzaFraction,
+    DrinksFraction,
+    ComplementsFraction,
+    ObservationsFraction,
+  },
   props: ['show'],
   emits: ['onClose'],
   setup(props, { emit }) {

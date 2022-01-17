@@ -1,4 +1,7 @@
 <template>
+  <div class="text-right">
+    <q-btn flat dense @click="showCreateClient = true">Agregar Cliente</q-btn>
+  </div>
   <div class="row items-center">
     <div class="col">
       <q-select
@@ -59,15 +62,26 @@
       </div>
     </div>
   </div>
+
+  <DialogCreateClient
+    :show="showCreateClient"
+    @onClose="showCreateClient = false"
+    @onSave="selectClient"
+  ></DialogCreateClient>
 </template>
 
 <script>
 import { watch, ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
+
+import DialogCreateClient from 'src/components/DialogCreateClient.vue'
+
 export default {
+  components: { DialogCreateClient },
   emits: ['onChangeClient'],
   setup(props, { emit }) {
     const store = useStore()
+    const showCreateClient = ref(false)
 
     onMounted(() => {
       store.dispatch('clients/fetchClients')
@@ -77,7 +91,7 @@ export default {
     const clients = computed(() =>
       store.state.clients.clients.map((c) => ({
         ...c,
-        label: c.first_name,
+        label: `${c.first_name} ${c.last_name}`,
         value: c.id,
       }))
     )
@@ -94,6 +108,10 @@ export default {
       const update = { id: selectedClient.value.id, ...selectedClient.value.address }
       store.dispatch('clients/updateClient', update)
     }
+    function selectClient(c) {
+      selectedClient.value = { ...c, label: `${c.first_name} ${c.last_name}`, value: c.id }
+    }
+
     watch(
       () => selectedClient.value,
       () => {
@@ -101,7 +119,7 @@ export default {
       }
     )
 
-    return { selectedClient, filteredClients, filterClients, updateClient }
+    return { selectedClient, filteredClients, filterClients, updateClient, showCreateClient, selectClient }
   },
 }
 </script>
