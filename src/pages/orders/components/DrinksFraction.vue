@@ -13,19 +13,19 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 
 import DrinksService from 'src/services/drinks.service'
 
 export default {
-  emits: ['onAddDrink'],
-  setup(props, { emit }) {
+  setup() {
     onMounted(() => {
       fetchDrinks()
     })
 
     const drinks = ref([])
     const filteredDrinks = ref([])
+    const orderDrinks = inject('orderDrinks')
     const drinkSelected = ref(null)
     async function fetchDrinks() {
       const resp = await DrinksService.fetchAll()
@@ -41,7 +41,14 @@ export default {
     }
     function addDrink() {
       if (drinkSelected.value != null) {
-        emit('onAddDrink', drinkSelected.value)
+        // emit('onAddDrink', drinkSelected.value)
+        const exists = orderDrinks.value.find((d) => d.id == drinkSelected.value.id)
+        if (!exists) return orderDrinks.value.push({ quantity: 1, ...drinkSelected.value })
+
+        orderDrinks.value = orderDrinks.value.map((d) => {
+          if (d.id == drinkSelected.value.id) d.quantity++
+          return d
+        })
       }
     }
 

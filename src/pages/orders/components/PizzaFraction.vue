@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { watch, ref, onMounted } from 'vue'
+import { watch, ref, onMounted, inject } from 'vue'
 import { useQuasar } from 'quasar'
 
 import SizesService from 'src/services/sizes.service'
@@ -101,8 +101,7 @@ import IngredientsService from 'src/services/ingredients.service'
 import MassService from 'src/services/mass.service'
 
 export default {
-  emits: ['onAddPizza'],
-  setup(props, { emit }) {
+  setup() {
     const $q = useQuasar()
 
     const sizes = ref([])
@@ -116,7 +115,7 @@ export default {
     const specialty2 = ref(null)
     const ingredients1 = ref([])
     const ingredients2 = ref([])
-    const pizzas = ref([])
+    const pizzas = inject('pizzas')
 
     onMounted(() => {
       fetchSizes()
@@ -196,7 +195,8 @@ export default {
           specialty2: specialty2.value,
           ingredients,
         }
-        emit('onAddPizza', pizza)
+        console.log(pizza)
+        pizzas.value.push(pizza)
         resetPizza()
       }
     }
@@ -212,7 +212,6 @@ export default {
       ingredients1,
       ingredients2,
       addPizza,
-      pizzas,
       massSelected,
       massTypes,
     }

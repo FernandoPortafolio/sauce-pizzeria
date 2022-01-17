@@ -71,14 +71,13 @@
 </template>
 
 <script>
-import { watch, ref, computed, onMounted } from 'vue'
+import { watch, ref, computed, onMounted, inject } from 'vue'
 import { useStore } from 'vuex'
 
 import DialogCreateClient from 'src/components/DialogCreateClient.vue'
 
 export default {
   components: { DialogCreateClient },
-  emits: ['onChangeClient'],
   setup(props, { emit }) {
     const store = useStore()
     const showCreateClient = ref(false)
@@ -87,7 +86,7 @@ export default {
       store.dispatch('clients/fetchClients')
     })
 
-    const selectedClient = ref(null)
+    const selectedClient = inject('selectedClient')
     const clients = computed(() =>
       store.state.clients.clients.map((c) => ({
         ...c,
@@ -111,13 +110,6 @@ export default {
     function selectClient(c) {
       selectedClient.value = { ...c, label: `${c.first_name} ${c.last_name}`, value: c.id }
     }
-
-    watch(
-      () => selectedClient.value,
-      () => {
-        emit('onChangeClient', selectedClient.value)
-      }
-    )
 
     return { selectedClient, filteredClients, filterClients, updateClient, showCreateClient, selectClient }
   },

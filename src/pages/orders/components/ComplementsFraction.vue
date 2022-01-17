@@ -7,24 +7,31 @@
 
 <script>
 import ComplementsService from 'src/services/complements.service'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, inject } from 'vue'
 
 export default {
-  emits: ['onAddComplement'],
-  setup(props, { emit }) {
+  setup() {
     onMounted(() => {
       fetchComplements()
     })
 
     const complements = ref([])
     const complementSelected = ref(null)
+    const orderComplements = inject('orderComplements')
+    
     async function fetchComplements() {
       const resp = await ComplementsService.fetchAll()
       complements.value = resp.map((d) => ({ ...d, value: d.id, label: d.name }))
     }
     function addComplement() {
       if (complementSelected.value != null) {
-        emit('onAddComplement', complementSelected.value)
+        const exists = orderComplements.value.find((d) => d.id == complementSelected.value.id)
+        if (!exists) return orderComplements.value.push({ quantity: 1, ...complementSelected.value })
+
+        orderComplements.value = orderComplements.value.map((d) => {
+          if (d.id == complementSelected.value.id) d.quantity++
+          return d
+        })
       }
     }
 

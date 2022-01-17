@@ -24,33 +24,30 @@
               <q-tab-panel name="client">
                 <fieldset>
                   <legend>Cliente</legend>
-                  <ClientFraction @onChangeClient="selectClient"></ClientFraction>
+                  <ClientFraction></ClientFraction>
                 </fieldset>
               </q-tab-panel>
               <q-tab-panel name="pizzas">
                 <fieldset class="q-mt-md">
                   <legend>Pizzas</legend>
 
-                  <PizzaFraction @onAddPizza="addPizza"></PizzaFraction>
+                  <PizzaFraction></PizzaFraction>
                 </fieldset>
               </q-tab-panel>
               <q-tab-panel name="drinks">
                 <fieldset class="q-mt-md">
                   <legend>Bebidas</legend>
-                  <DrinksFraction @onAddDrink="addDrink"></DrinksFraction>
+                  <DrinksFraction></DrinksFraction>
                 </fieldset>
               </q-tab-panel>
               <q-tab-panel name="complements">
                 <fieldset class="q-mt-md">
                   <legend>Complementos</legend>
-                  <ComplementsFraction @onAddComplement="addComplement"></ComplementsFraction>
+                  <ComplementsFraction></ComplementsFraction>
                 </fieldset>
               </q-tab-panel>
               <q-tab-panel name="observations">
-                <ObservationsFraction
-                  @onChangeOrderType="changeOrderType"
-                  @onChangeObservations="(o) => (observations = o)"
-                ></ObservationsFraction>
+                <ObservationsFraction></ObservationsFraction>
               </q-tab-panel>
             </q-tab-panels>
           </q-card-section>
@@ -59,6 +56,7 @@
         <div class="col-12 col-md-6">
           <q-card-section>
             <p class="text-bold q-mt-sm">Resumen Del Pedido</p>
+            <p><span class="text-bold">Cliente</span>: {{selectedClient?.first_name}} {{selectedClient?.last_name}}</p>
             <q-markup-table separator="none" flat dense>
               <thead>
                 <tr>
@@ -132,7 +130,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, provide } from 'vue'
 import { useQuasar } from 'quasar'
 
 import ClientFraction from './ClientFraction.vue'
@@ -168,47 +166,25 @@ export default {
 
     //client
     const selectedClient = ref(null)
-    function selectClient(c) {
-      selectedClient.value = c
-    }
+    provide('selectedClient', selectedClient)
 
     //pizzas
     const pizzas = ref([])
-    function addPizza(pizza) {
-      console.log(pizza)
-      pizzas.value.push(pizza)
-    }
+    provide('pizzas', pizzas)
 
     //Bebidas
     const orderDrinks = ref([])
-    function addDrink(drink) {
-      const exists = orderDrinks.value.find((d) => d.id == drink.id)
-      if (!exists) return orderDrinks.value.push({ quantity: 1, ...drink })
-
-      orderDrinks.value = orderDrinks.value.map((d) => {
-        if (d.id == drink.id) d.quantity++
-        return d
-      })
-    }
+    provide('orderDrinks', orderDrinks)
 
     //complementos
     const orderComplements = ref([])
-    function addComplement(complement) {
-      const exists = orderComplements.value.find((d) => d.id == complement.id)
-      if (!exists) return orderComplements.value.push({ quantity: 1, ...complement })
-
-      orderComplements.value = orderComplements.value.map((d) => {
-        if (d.id == complement.id) d.quantity++
-        return d
-      })
-    }
+    provide('orderComplements', orderComplements)
 
     //observations
     const orderType = ref(null)
     const observations = ref(null)
-    function changeOrderType(t) {
-      orderType.value = t
-    }
+    provide('orderType', orderType)
+    provide('observations', observations)
 
     //pedido
     const total = computed(() => {
@@ -230,15 +206,10 @@ export default {
       tab,
       close,
       selectedClient,
-      selectClient,
-      addPizza,
       pizzas,
-      addDrink,
       orderDrinks,
       orderComplements,
-      addComplement,
       orderType,
-      changeOrderType,
       observations,
       total,
       subtotal,
