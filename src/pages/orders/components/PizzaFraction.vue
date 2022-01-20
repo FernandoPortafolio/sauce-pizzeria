@@ -155,6 +155,7 @@ export default {
       sizeSelected.value = null
       specialty1.value = null
       specialty2.value = null
+      massSelected.value = null
       ingredients1.value = []
       ingredients2.value = []
     }
@@ -193,9 +194,9 @@ export default {
           size: sizeSelected.value,
           specialty1: specialty1.value,
           specialty2: specialty2.value,
+          mass_type: massSelected.value,
           ingredients,
         }
-        console.log(pizza)
         pizzas.value.push(pizza)
         resetPizza()
       }

@@ -56,7 +56,9 @@
         <div class="col-12 col-md-6">
           <q-card-section>
             <p class="text-bold q-mt-sm">Resumen Del Pedido</p>
-            <p><span class="text-bold">Cliente</span>: {{selectedClient?.first_name}} {{selectedClient?.last_name}}</p>
+            <p>
+              <span class="text-bold">Cliente</span>: {{ selectedClient?.first_name }} {{ selectedClient?.last_name }}
+            </p>
             <q-markup-table separator="none" flat dense>
               <thead>
                 <tr>
@@ -71,6 +73,7 @@
                   <td class="text-right">
                     {{ pizza.specialty1.name }}
                     <span v-if="pizza.specialty2 != null">- {{ pizza.specialty2.name }}</span>
+                    {{ pizza.size.name }}
                   </td>
                   <td class="text-right">{{ formatter.format(pizza.size.price) }}</td>
                 </tr>
@@ -112,7 +115,7 @@
                   <td></td>
                   <td></td>
                   <td class="text-right">
-                    <q-btn>Pagar</q-btn>
+                    <q-btn @click="pay">Pagar</q-btn>
                   </td>
                 </tr>
               </tbody>
@@ -130,7 +133,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref, provide } from 'vue'
+import { computed, onMounted, ref, provide, inject } from 'vue'
 import { useQuasar } from 'quasar'
 
 import ClientFraction from './ClientFraction.vue'
@@ -163,6 +166,8 @@ export default {
     function close() {
       emit('onClose')
     }
+
+    const orders = inject('orders')
 
     //client
     const selectedClient = ref(null)
@@ -202,6 +207,62 @@ export default {
       paymentTypes.value = resp.map((r) => ({ ...r, value: r.id, label: r.name }))
     }
 
+    function validateOrder() {
+      let message = null
+      if (selectedClient.value == null) message = 'Selecciona un cliente'
+      else if (orderType.value == null) message = 'Selecciona el tipo de pedido'
+      else if (paymentSelected.value == null) message = 'Selecciona el tipo de pago'
+
+      if (message != null) {
+        $q.notify({
+          message,
+          color: 'negative',
+          timeout: 1000,
+        })
+        return false
+      }
+
+      return true
+    }
+
+    async function pay() {
+      if (!validateOrder()) return
+      const order = {
+        client_id: selectedClient.value.id,
+        pizzas: pizzas.value.map((p) => {
+          return {
+            ingredients: p.ingredients.map((i) => ({ id: i.id, half: i.half })),
+            size: p.size.id,
+            mass_type: p.mass_type.id,
+            specialty1: p.specialty1.id,
+            specialty2: p.specialty2?.id,
+          }
+        }),
+        drinks: orderDrinks.value.map((d) => ({ id: d.id, quantity: d.quantity })),
+        complements: orderComplements.value.map((c) => ({ id: c.id, quantity: c.quantity })),
+        observations: observations.value,
+        total: total.value,
+        payment_type: paymentSelected.value.id,
+        order_type: orderType.value.id,
+      }
+
+      const newOrder = await OrderService.createOrder(order)
+      console.log(newOrder)
+      orders.value.push(newOrder)
+      close()
+      reset()
+    }
+
+    function reset() {
+      selectedClient.value = null
+      pizzas.value = []
+      orderDrinks.value = []
+      orderComplements.value = []
+      orderType.value = null
+      observations.value = null
+      paymentSelected.value = null
+    }
+
     return {
       tab,
       close,
@@ -217,6 +278,7 @@ export default {
       formatter,
       paymentTypes,
       paymentSelected,
+      pay,
     }
   },
 }
