@@ -12,11 +12,11 @@
       <div class="row">
         <div class="col-12 col-md-6">
           <q-tabs v-model="tab" class="text-teal">
-            <q-tab name="client" label="Cliente" />
-            <q-tab name="pizzas" label="Pizzas" />
-            <q-tab name="drinks" label="Bebidas" />
-            <q-tab name="complements" label="Complementos" />
-            <q-tab name="observations" label="Observaciones" />
+            <q-tab name="client" icon="face" label="Cliente" />
+            <q-tab name="pizzas" icon="local_pizza" label="Pizzas" />
+            <q-tab name="drinks" icon="local_bar" label="Bebidas" />
+            <q-tab name="complements" icon="tapas" label="Complementos" />
+            <q-tab name="observations" icon="article" label="Observaciones" />
           </q-tabs>
 
           <q-card-section>

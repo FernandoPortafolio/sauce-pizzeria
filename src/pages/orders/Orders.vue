@@ -14,34 +14,42 @@
         <q-td style="width: 120px">
           <div class="text-center">
             <q-btn flat dense round icon="delete_outline" @click="deteleOrder(props.row)" />
-            <q-btn flat dense round icon="preview" @click="deteleOrder(props.row)" />
+            <q-btn flat dense round icon="preview" @click="showOrder(props.row)" />
           </div>
         </q-td>
       </template>
     </Table>
 
     <DialogCreateOrder :show="showCreateDialog" @onClose="showCreateDialog = false"></DialogCreateOrder>
+    <DialogShowOrder :show="showOrderDialog" @hide="showOrderDialog = false"></DialogShowOrder>
   </q-page>
 </template>
 
 <script>
 import { ref, onMounted, provide } from 'vue'
+import { useQuasar } from 'quasar'
 
 import OrderService from 'src/services/order.service'
 
 import DialogCreateOrder from './components/DialogCreateOrder.vue'
+import DialogShowOrder from './components/DialogShowOrder.vue'
 import Table from 'src/components/Table.vue'
 
 export default {
   components: {
     DialogCreateOrder,
     Table,
+    DialogShowOrder,
   },
   setup() {
+    const $q = useQuasar()
     const showCreateDialog = ref(false)
+    const showOrderDialog = ref(false)
     const loading = ref(false)
     const orders = ref([])
     const filter = ref(null)
+    const selectedOrder = ref(null)
+    provide('selectedOrder', selectedOrder)
     provide('orders', orders)
 
     onMounted(() => {
@@ -91,21 +99,27 @@ export default {
     }
 
     async function deteleOrder(order) {
-      const date = new Date(order.created_at)
-      console.log(
-        date.toLocaleString('es-MX', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-        })
-      )
+      $q.dialog({
+        title: 'Confirmación',
+        message: `¿Estas seguro de eliminar esta orden?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        try {
+          await OrderService.deleteOrder(order.id)
+          orders.value = orders.value.filter((o) => o.id != order.id)
+        } catch (error) {
+          console.log(error)
+        }
+      })
     }
 
-    return { showCreateDialog, orders, loading, columns, deteleOrder, filter }
+    function showOrder(order) {
+      selectedOrder.value = order
+      showOrderDialog.value = true
+    }
+
+    return { showCreateDialog, orders, loading, columns, deteleOrder, filter, showOrder, showOrderDialog }
   },
 }
 </script>
